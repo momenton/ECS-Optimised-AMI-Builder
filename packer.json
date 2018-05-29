@@ -1,0 +1,30 @@
+
+{
+    "builders": [{
+      "type": "amazon-ebs",
+      "region": "ap-southeast-2",
+      "source_ami": "{{user `ami`}}",
+      "instance_type": "t2.medium",
+      "ssh_username": "ec2-user",
+      "ami_name": "ecs-base {{timestamp}}",
+      "communicator": "ssh",
+      "ssh_pty": true,
+      "vpc_id": "{{user `vpc`}}",
+      "subnet_id": "{{user `subnet`}}",
+      "tags": {
+        "CostCentre": "{{user `tag`}}"
+      },
+      "run_tags": {
+        "CostCentre": "{{user `tag`}}"
+      }
+    }],
+  
+    "provisioners": [{
+      "type": "shell",
+      "execute_command": "echo '' | sudo -S -u root '{{ .Path }}'",
+      "scripts": [
+        "scripts/provisioner.sh"
+      ]
+    }]
+  }
+  
