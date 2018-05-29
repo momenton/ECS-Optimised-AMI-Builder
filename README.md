@@ -1,5 +1,5 @@
 # ECS-Optimised-AMI-Builder
-Packer script to build custom AMI to run on ECS EC2 instances
+Packer script to build custom AMI to run on ECS EC2 instances using gVisor `runsc` runtime.
 
 ## Running to packer scripts
 
