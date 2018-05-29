@@ -10,5 +10,5 @@ $ packer build \
 -var 'vpc=<your VPC id>' \
 -var 'subnet=<your subnet id>' \
 -var 'tag=<your CostCentre tag>' \
-ecs-hip-packer.json
+packer.json
 ```
