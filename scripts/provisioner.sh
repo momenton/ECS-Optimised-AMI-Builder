@@ -76,8 +76,13 @@ cat <<EOF >> /etc/docker/daemon.json
 {
     "runtimes": {
         "runsc": {
-            "path": "/usr/local/bin/runsc"
-        }
+            "path": "/usr/local/bin/runsc",
+            "runtimeArgs": [
+                "--debug-log-dir=/tmp/runsc",
+                "--debug",
+                "--strace"
+            ]
+       }
     }
 }
 EOF
