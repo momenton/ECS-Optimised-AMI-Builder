@@ -1,4 +1,3 @@
-
 {
     "builders": [{
       "type": "amazon-ebs",
