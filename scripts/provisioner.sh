@@ -11,6 +11,27 @@ yum-config-manager --disable docker-ce-test
 # Minimum required version for gVisor is v17.09.0
 yum install -y docker-ce-17.12.0.ce
 
+# Install gVisor runsc
+wget https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc
+chmod +x runsc
+sudo mv runsc /usr/local/bin
+
+# Configure docker daemon to swap runc for runsc
+cat <<EOF >> /etc/docker/daemon.json
+{
+    "runtimes": {
+        "runsc": {
+            "path": "/usr/local/bin/runsc",
+            "runtimeArgs": [
+                "--debug-log-dir=/tmp/runsc",
+                "--debug",
+                "--strace"
+            ]
+       }
+    }
+}
+EOF
+
 systemctl enable docker
 
 # install ECS container agent
@@ -25,10 +46,6 @@ iptables -t nat -A OUTPUT -d 169.254.170.2 -p tcp -m tcp --dport 80 -j REDIRECT 
 
 iptables-save > /etc/sysconfig/iptables
 
-# Install gVisor runsc
-wget https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc
-chmod +x runsc
-sudo mv runsc /usr/local/bin
 
 # create the Amazon ECS container agent configuration file and then
 # set the cluster name in User Data with the following:
@@ -69,22 +86,6 @@ ExecStop=/usr/bin/docker stop %i
 
 [Install]
 WantedBy=multi-user.target
-EOF
-
-# Configure docker daemon to swap runc for runsc
-cat <<EOF >> /etc/docker/daemon.json
-{
-    "runtimes": {
-        "runsc": {
-            "path": "/usr/local/bin/runsc",
-            "runtimeArgs": [
-                "--debug-log-dir=/tmp/runsc",
-                "--debug",
-                "--strace"
-            ]
-       }
-    }
-}
 EOF
 
 systemctl enable docker-container@ecs-agent.service
